@@ -106,7 +106,7 @@ GenerateClassCluster=0
 DocumentUniqueId=MGYPOTER
 
 [Document5]
-DocumentPath=..\Documents\ul_TLV74010PDBVR\AltiumDesigner\2020-10-21_21-18-59\HDC2022.BomDoc
+DocumentPath=HDC2022.BomDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
