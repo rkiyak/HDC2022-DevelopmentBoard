@@ -3,8 +3,6 @@
  TI HDC2022 Development Board & Firmware
 
 
-Draftsman
-
 ## Hardware
 
 * Temperature and Humidity Sensor - HDC2022DEPR
