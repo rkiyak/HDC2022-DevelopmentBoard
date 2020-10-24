@@ -2,7 +2,7 @@
   @
   @   Date               :        24.10.2020 / Saturday
   @
-  @   Contact            :        Writing by M.Rasit KIYAK                    mrstkyk@gmail.com
+  @   Contact            :        Writed by M.Rasit KIYAK                    mrstkyk@gmail.com
   @
   @   License            :        GNU AFFERO GENERAL PUBLIC LICENSE v3
   @
@@ -626,6 +626,29 @@ uint8_t HDC2022_c::get_DeviceIDLOW()
   * @retval None
   */
 uint8_t HDC2022_c::get_DeviceIDHIGH()
+{
+
+
+
+}
+
+
+/**
+  * @brief  Set or clear the selected data port bit.
+  * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
+  *         accesses. In this way, there is no risk of an IRQ occurring between
+  *         the read and the modify access.
+  *
+  * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32F0 family
+  * @param  GPIO_Pin specifies the port bit to be written.
+  *          This parameter can be one of GPIO_PIN_x where x can be (0..15).
+  * @param  PinState specifies the value to be written to the selected bit.
+  *          This parameter can be one of the GPIO_PinState enum values:
+  *            @arg GPIO_PIN_RESET: to clear the port pin
+  *            @arg GPIO_PIN_SET: to set the port pin
+  * @retval None
+  */
+void HDC2022_c::Init()
 {
 
 

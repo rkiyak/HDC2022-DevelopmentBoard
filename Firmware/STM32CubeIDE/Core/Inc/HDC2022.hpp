@@ -2,7 +2,7 @@
   @
   @   Date               :        24.10.2020 / Saturday
   @
-  @   Contact            :        Writing by M.Rasit KIYAK                    mrstkyk@gmail.com
+  @   Contact            :        Writed by M.Rasit KIYAK                    mrstkyk@gmail.com
   @
   @   License            :        GNU AFFERO GENERAL PUBLIC LICENSE v3
   @
@@ -28,6 +28,8 @@ public:
 	uint16_t valTemperature;
 
   void      DeInit (void);
+  void      Init (void);
+
   uint16_t  get_Temperature();
   uint16_t  get_Humidity();
   uint8_t   get_Status();
@@ -186,8 +188,8 @@ uint8_t HUMIDITY_THRESHOLD_HIGH;    /*  Humidity threshold HIGH value     */
        union{
                  struct
                 {
-                  uint8_t INT_MODE:1;     /*  Interrupt mode : 0 = Clear-on-read mode, 1 = Comparator mode                      */
-                  uint8_t INT_POL:1;      /*  Interrupt polarity : 0 = Active Low, 1 = Active High                              */
+                  uint8_t INT_MODE:1;     /*  Interrupt mode                : 0 = Clear-on-read mode, 1 = Comparator mode       */
+                  uint8_t INT_POL:1;      /*  Interrupt polarity            : 0 = Active Low, 1 = Active High                   */
                   uint8_t DRDY__INT_EN:1; /*  DRDY/INT_EN pin configuration : 0 = High Z, 1 = Enable                            */
                   uint8_t HEAT_EN:1;      /*  0 = Heater off, 1 = Heater on                                                     */
                   uint8_t CC:3;           /*  Configure the measurement mode to one-shot or continuous conversion               */
@@ -202,11 +204,11 @@ uint8_t HUMIDITY_THRESHOLD_HIGH;    /*  Humidity threshold HIGH value     */
        union{
                  struct
                 {
-                  uint8_t MEAS_TRIG:1;  /*  Measurement trigger - 0: No action, 1: Start measurement                                      */
-                  uint8_t MEAS_CONF:2;  /*  Measurement configuration - 00: Humidity + Temperature, 01: Temperature only, 10: NA, 11: NA  */
-                  uint8_t :1;           /*  Reserved                                                                                      */
-                  uint8_t HACC:2;       /*  Humidity accuracy option -  00 : 14 bit, 01 : 11 bit, 10 : 9 bit, 11 : NA                     */
-                  uint8_t TACC:2;       /*  Temperature accuracy option -  00 : 14 bit, 01 : 11 bit, 10 : 9 bit, 11 : NA                  */
+                  uint8_t MEAS_TRIG:1;  /*  Measurement trigger         - 0: No action, 1: Start measurement                                */
+                  uint8_t MEAS_CONF:2;  /*  Measurement configuration   - 00: Humidity + Temperature, 01: Temperature only, 10: NA, 11: NA  */
+                  uint8_t :1;           /*  Reserved                                                                                        */
+                  uint8_t HACC:2;       /*  Humidity accuracy option    - 00 : 14 bit, 01 : 11 bit, 10 : 9 bit, 11 : NA                     */
+                  uint8_t TACC:2;       /*  Temperature accuracy option - 00 : 14 bit, 01 : 11 bit, 10 : 9 bit, 11 : NA                     */
                 };
        }bits;
 }MEASUREMENT_CONFIGURATION;
