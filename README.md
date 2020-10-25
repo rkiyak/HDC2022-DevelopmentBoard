@@ -1,17 +1,17 @@
 # HDC2022-DevelopmentBoard
+ `TI HDC2022 Development Board & Firmware`
+ 
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://github.com/T-RK/HDC2022-DevelopmentBoard/tree/main/Firmware/Driver)
 
- ---------------------------------------
- TI HDC2022 Development Board & Firmware
 
 
 ## Hardware
 
-
-* PCB Design Software : Altium Designer 20.2.5
 * Temperature and Humidity Sensor - HDC2022DEPR
-* Internal LDO TLV74018PDBVR (1.8V)
+* External LDO - TLV74018PDBVR (1.8V)
+* Level Translator MOSFETs
 * Expansion header for I2C and Power Pins
-* PCB size 25x15 mm
+* PCB dimension 25x15 mm
 
 <img src="Hardware/HDC2022 PCB Design/Project Outputs for HDC2022/HDC2022-page-001.jpg" width="800">
 <img src="Hardware/HDC2022 PCB Design/Project Outputs for HDC2022/HDC2022-page-002.jpg" width="800">
@@ -21,7 +21,7 @@
 
 ## Firmware
 
-* IDE : STM32CubeIDE 1.4.0
+* IDE : STM32CubeIDE
 * MCU : STM32L476RG-Nucleo
 * Dependency : 
 ```sh
@@ -40,7 +40,7 @@
  		while(1)
  		{
 			temperature=HDC2022.get_Temperature();
-			humidity=HDC2022.get_Humidity();
+			humidityHDC2022.get_Humidity();
  		}
  	}
 ```
