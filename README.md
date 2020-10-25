@@ -6,6 +6,8 @@
 
 ## Hardware
 
+
+* PCB Design Software : Altium Designer 20.2.5
 * Temperature and Humidity Sensor - HDC2022DEPR
 * Internal LDO TLV74018PDBVR (1.8V)
 * Expansion header for I2C and Power Pins
@@ -19,7 +21,7 @@
 
 ## Firmware
 
-* IDE : STM32CubeIDE
+* IDE : STM32CubeIDE 1.4.0
 * MCU : STM32L476RG-Nucleo
 * Dependency : 
 ```sh
@@ -38,7 +40,7 @@
  		while(1)
  		{
 			temperature=HDC2022.get_Temperature();
-			humidityHDC2022.get_Humidity();
+			humidity=HDC2022.get_Humidity();
  		}
  	}
 ```
