@@ -1,4 +1,4 @@
-![alt text](https://socialify.git.ci/T-RK/HDC2022-DevelopmentBoard/image?description=1&font=KoHo&issues=1&language=1&logo=https%3A%2F%2Fgithub.com%2FT-RK%2FHDC2022-DevelopmentBoard%2Fblob%2Fmain%2FDocuments%2FRK%2520Logo.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+![alt text](https://socialify.git.ci/T-RK/HDC2022-DevelopmentBoard/image?description=1&font=Bitter&forks=1&issues=1&language=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark)
 
 # HDC2022-DevelopmentBoard
  `TI HDC2022 Development Board & Firmware`
