@@ -60,7 +60,7 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+HDC2022_c HDC2022;
 /* USER CODE END 0 */
 
 /**
@@ -70,7 +70,7 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-HDC2022_c HDC2022;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,6 +95,8 @@ HDC2022_c HDC2022;
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HDC2022.Init(hi2c1,100);
+  HDC2022.TEMPERATURE_OFFSET_ADJUSTMENT.bits.bit0=1;
+  HDC2022.set_TemperatureOffset();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,7 +107,6 @@ HDC2022_c HDC2022;
 
     /* USER CODE BEGIN 3 */
 	  HDC2022.get_Temperature();
-
 
 
   }
