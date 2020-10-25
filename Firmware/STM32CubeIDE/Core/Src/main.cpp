@@ -94,7 +94,7 @@ HDC2022_c HDC2022;
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  HDC2022.Init(hi2c1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,8 +104,8 @@ HDC2022_c HDC2022;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HDC2022.DeInit();
-	  HDC2022.DeviceID=0x80;
+	  HDC2022.get_Temperature();
+
 
 
   }

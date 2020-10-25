@@ -1,16 +1,15 @@
 /*
   @
-  @   Date               :        24.10.2020 / Saturday
+  @   Date               :        25.10.2020 / Saturday
   @
-  @   Contact            :        Writed by M.Rasit KIYAK                    mrstkyk@gmail.com
+  @   Contact            :        M.Rasit KIYAK                    mrstkyk@gmail.com
   @
   @   License            :        GNU AFFERO GENERAL PUBLIC LICENSE v3
   @
   @   Description        :        This Library for HDC2022 Temperature & Humidity Sensor from Texas Instruments
   @
-  @   Version            :        0.0.1
+  @   Version            :        0.1.0
 */
-
 #ifndef _HDC2022_HPP_
 #define _HDC2022_HPP_
 
@@ -22,16 +21,45 @@ class HDC2022_c {
 
 public:
 
-	uint8_t DeviceID;
-	uint8_t buffer;
-	uint16_t valHumidity;
-	uint16_t valTemperature;
+	I2C_HandleTypeDef i2c;
+	 typedef enum
+	{
+		ADDR_TEMPERATURE_LOW = 0x00,    	/*	Temperature data [7:0]                           	*/
+		ADDR_TEMPERATURE_HIGH,          	/*	Temperature data [15:8]                          	*/
+		ADDR_HUMIDITY_LOW,              	/*	Humidity data [7:0]                              	*/
+		ADDR_HUMIDITY_HIGH,             	/*	Humidity data [15:8]                             	*/
+		ADDR_STATUS,                    	/*	DataReady and threshold status                   	*/
+		ADDR_TEMPERATURE_MAX,           	/*	Maximum measured temperature (one-shot mode only)	*/
+		ADDR_HUMIDITY_MAX,              	/*	Maximum measured humidity (one-shot mode only)   	*/
+		ADDR_INTERRUPT_ENABLE,          	/*	Interrupt enable                                 	*/
+		ADDR_TEMP_OFFSET_ADJUST,        	/*	Temperature offset adjustment                    	*/
+		ADDR_HUM_OFFSET_ADJUST,         	/*	Humidity offset adjustment                       	*/
+		ADDR_TEMP_THR_L,                	/*	Temperature threshold low                        	*/
+		ADDR_TEMP_THR_H,                	/*	Temperature threshold high                       	*/
+		ADDR_RH_THR_L,                  	/*	Humidity threshold low                           	*/
+		ADDR_RH_THR_H,                  	/*	Humidity threshold high                          	*/
+		ADDR_DEVICE_CONFIGURATION,      	/*	Soft reset and interrupt reporting configuration 	*/
+		ADDR_MEASUREMENT_CONFIGURATION, 	/*	Device measurement configuration                 	*/
+		ADDR_MANUFACTURER_ID_LOW = 0xFC,	/*	Manufacturer ID lower-byte                       	*/
+		ADDR_MANUFACTURER_ID_HIGH,      	/*	Manufacturer ID higher-byte                      	*/
+		ADDR_DEVICE_ID_LOW,             	/*	Device ID lower-byte                             	*/
+		ADDR_DEVICE_ID_HIGH,            	/*	Device ID higher-byte                            	*/
+	}addr_t;
 
-  void      DeInit (void);
-  void      Init (void);
+addr_t adress;
+	uint8_t DeviceID = 0x80;
+	uint8_t buffer_8[5];
+	uint8_t buf_getI2C[2];
+	uint8_t buf_setI2C[2];
+	float valHumidity;
+	float valTemperature;
+	uint8_t i2c_timeout = 100;
 
-  uint16_t  get_Temperature();
-  uint16_t  get_Humidity();
+  void      DeInit ();
+  void      Init (I2C_HandleTypeDef I2C_Handler);
+
+  float  get_Temperature();
+  float  get_Humidity();
   uint8_t   get_Status();
   
   uint8_t   get_MAXTemperature();
@@ -40,7 +68,7 @@ public:
   void      set_Interrupt();
   uint8_t   get_Interrupt();
   
-  void      get_TemperatureOffset();
+  uint8_t      get_TemperatureOffset();
   void      set_TemperatureOffset();
   
   uint8_t   get_HumidityOffset();
@@ -70,31 +98,10 @@ public:
   uint8_t   get_DeviceIDLOW();
   uint8_t   get_DeviceIDHIGH();
 
-private:
+  void I2C_setByte(addr_t reg, uint8_t val);
+  uint8_t I2C_getByte(addr_t reg);
 
-  enum
-{
-	ADDR_TEMPERATURE_LOW = 0x00,    	/*	Temperature data [7:0]                           	*/
-	ADDR_TEMPERATURE_HIGH,          	/*	Temperature data [15:8]                          	*/
-	ADDR_HUMIDITY_LOW,              	/*	Humidity data [7:0]                              	*/
-	ADDR_HUMIDITY_HIGH,             	/*	Humidity data [15:8]                             	*/
-	ADDR_STATUS,                    	/*	DataReady and threshold status                   	*/
-	ADDR_TEMPERATURE_MAX,           	/*	Maximum measured temperature (one-shot mode only)	*/
-	ADDR_HUMIDITY_MAX,              	/*	Maximum measured humidity (one-shot mode only)   	*/
-	ADDR_INTERRUPT_ENABLE,          	/*	Interrupt enable                                 	*/
-	ADDR_TEMP_OFFSET_ADJUST,        	/*	Temperature offset adjustment                    	*/
-	ADDR_HUM_OFFSET_ADJUST,         	/*	Humidity offset adjustment                       	*/
-	ADDR_TEMP_THR_L,                	/*	Temperature threshold low                        	*/
-	ADDR_TEMP_THR_H,                	/*	Temperature threshold high                       	*/
-	ADDR_RH_THR_L,                  	/*	Humidity threshold low                           	*/
-	ADDR_RH_THR_H,                  	/*	Humidity threshold high                          	*/
-	ADDR_DEVICE_CONFIGURATION,      	/*	Soft reset and interrupt reporting configuration 	*/
-	ADDR_MEASUREMENT_CONFIGURATION, 	/*	Device measurement configuration                 	*/
-	ADDR_MANUFACTURER_ID_LOW = 0xFC,	/*	Manufacturer ID lower-byte                       	*/
-	ADDR_MANUFACTURER_ID_HIGH,      	/*	Manufacturer ID higher-byte                      	*/
-	ADDR_DEVICE_ID_LOW,             	/*	Device ID lower-byte                             	*/
-	ADDR_DEVICE_ID_HIGH,            	/*	Device ID higher-byte                            	*/
-}REGISTER_MAP;                 
+private:
 
 
 uint8_t TEMPERATURE_LOW;  /* Temperature data- lower byte  */

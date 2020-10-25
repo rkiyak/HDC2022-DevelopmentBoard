@@ -1,21 +1,73 @@
 /*
   @
-  @   Date               :        24.10.2020 / Saturday
+  @   Date               :        25.10.2020 / Saturday
   @
-  @   Contact            :        Writed by M.Rasit KIYAK                    mrstkyk@gmail.com
+  @   Contact            :        M.Rasit KIYAK                    mrstkyk@gmail.com
   @
   @   License            :        GNU AFFERO GENERAL PUBLIC LICENSE v3
   @
   @   Description        :        This Library for HDC2022 Temperature & Humidity Sensor from Texas Instruments
   @
-  @   Version            :        0.0.1
+  @   Version            :        0.1.0
 */
 
 #include <HDC2022.hpp>
 
 
-void HDC2022_c::DeInit(void)
+/**
+  * @brief  Set or clear the selected data port bit.
+  * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
+  *         accesses. In this way, there is no risk of an IRQ occurring between
+  *         the read and the modify access.
+  *
+  * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32F0 family
+  * @param  GPIO_Pin specifies the port bit to be written.
+  *          This parameter can be one of GPIO_PIN_x where x can be (0..15).
+  * @param  PinState specifies the value to be written to the selected bit.
+  *          This parameter can be one of the GPIO_PinState enum values:
+  *            @arg GPIO_PIN_RESET: to clear the port pin
+  *            @arg GPIO_PIN_SET: to set the port pin
+  * @retval None
+*/
+void HDC2022_c::I2C_setByte(addr_t reg, uint8_t val)
 {
+
+	buf_setI2C[0] = reg;
+	buf_setI2C[0] = val;
+	HAL_I2C_Master_Transmit(&i2c,DeviceID<<1,buf_setI2C,2,i2c_timeout);
+
+}
+
+/**
+  * @brief  Set or clear the selected data port bit.
+  * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
+  *         accesses. In this way, there is no risk of an IRQ occurring between
+  *         the read and the modify access.
+  *
+  * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32F0 family
+  * @param  GPIO_Pin specifies the port bit to be written.
+  *          This parameter can be one of GPIO_PIN_x where x can be (0..15).
+  * @param  PinState specifies the value to be written to the selected bit.
+  *          This parameter can be one of the GPIO_PinState enum values:
+  *            @arg GPIO_PIN_RESET: to clear the port pin
+  *            @arg GPIO_PIN_SET: to set the port pin
+  * @retval None
+*/
+uint8_t HDC2022_c::I2C_getByte(addr_t reg)
+{
+
+	buf_getI2C[0] = reg;
+	HAL_I2C_Master_Transmit(&i2c,DeviceID<<1,buf_getI2C,1,i2c_timeout);
+	HAL_I2C_Master_Receive(&i2c,DeviceID<<1,buf_getI2C,1,i2c_timeout);
+	return buf_getI2C[0];
+
+}
+
+
+
+void HDC2022_c::DeInit()
+{
+
 	TEMPERATURE_LOW                  	=	0x00;
 	TEMPERATURE_HIGH                 	=	0x00;
 	HUMIDITY_LOW                     	=	0x00;
@@ -38,6 +90,7 @@ void HDC2022_c::DeInit(void)
 	DEVICE_ID_HIGH                   	=	0X07;
 }
 
+
 /**
   * @brief  Set or clear the selected data port bit.
   * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
@@ -53,10 +106,48 @@ void HDC2022_c::DeInit(void)
   *            @arg GPIO_PIN_SET: to set the port pin
   * @retval None
   */
-uint16_t HDC2022_c::get_Temperature()
+void HDC2022_c::Init(I2C_HandleTypeDef I2C_Handler)
 {
 
+	i2c=I2C_Handler;
+	DeInit();
+	set_DeviceConfiguration();
+	set_HumidityHIGHThreshold();
+	set_HumidityOffset();
+	set_HumidityLOWThreshold();
+	set_Interrupt();
+	set_TemperatureOffset();
+	set_TemperatureLOWThreshold();
+	set_TemperatureHIGHThreshold();
+	set_MeasurementConfiguration();
 
+
+}
+
+
+/**
+  * @brief  Set or clear the selected data port bit.
+  * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
+  *         accesses. In this way, there is no risk of an IRQ occurring between
+  *         the read and the modify access.
+  *
+  * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32F0 family
+  * @param  GPIO_Pin specifies the port bit to be written.
+  *          This parameter can be one of GPIO_PIN_x where x can be (0..15).
+  * @param  PinState specifies the value to be written to the selected bit.
+  *          This parameter can be one of the GPIO_PinState enum values:
+  *            @arg GPIO_PIN_RESET: to clear the port pin
+  *            @arg GPIO_PIN_SET: to set the port pin
+  * @retval None
+  */
+float HDC2022_c::get_Temperature()
+{
+
+	buffer_8[0]=I2C_getByte(ADDR_TEMPERATURE_LOW);
+	buffer_8[1]=I2C_getByte(ADDR_TEMPERATURE_HIGH);
+	valTemperature=((buffer_8[1]<<8)|(buffer_8[0]))*1.2589-40;
+
+	return valTemperature;
 
 }
 
@@ -75,10 +166,14 @@ uint16_t HDC2022_c::get_Temperature()
   *            @arg GPIO_PIN_SET: to set the port pin
   * @retval None
   */
-uint16_t HDC2022_c::get_Humidity()
+float HDC2022_c::get_Humidity()
 {
 
+	buffer_8[0]=I2C_getByte(ADDR_HUMIDITY_LOW);
+	buffer_8[1]=I2C_getByte(ADDR_HUMIDITY_HIGH);
+	valHumidity=((buffer_8[1]<<8)|(buffer_8[0]))*0.763;
 
+	return valHumidity;
 
 }
 
@@ -100,7 +195,7 @@ uint16_t HDC2022_c::get_Humidity()
 uint8_t HDC2022_c::get_Status()
 {
 
-
+	return	I2C_getByte(ADDR_STATUS);
 
 }
 
@@ -122,7 +217,7 @@ uint8_t HDC2022_c::get_Status()
 uint8_t HDC2022_c::get_MAXTemperature()
 {
 
-
+	return	I2C_getByte(ADDR_TEMPERATURE_MAX);
 
 }
 
@@ -144,7 +239,7 @@ uint8_t HDC2022_c::get_MAXTemperature()
 uint8_t HDC2022_c::get_MAXHumidity()
 {
 
-
+	return	I2C_getByte(ADDR_HUMIDITY_MAX);
 
 }
 
@@ -165,8 +260,10 @@ uint8_t HDC2022_c::get_MAXHumidity()
   */
 void HDC2022_c::set_Interrupt()
 {
-
-
+	/*
+	INTERRUPT_ENABLE.bits.DRDY_ENABLE=1; 	Bitwise assignment example
+	*/
+	I2C_setByte(ADDR_INTERRUPT_ENABLE, INTERRUPT_ENABLE.val);
 
 }
 
@@ -188,7 +285,7 @@ void HDC2022_c::set_Interrupt()
 uint8_t HDC2022_c::get_Interrupt()
 {
 
-
+	return	I2C_getByte(ADDR_INTERRUPT_ENABLE);
 
 }
 
@@ -207,10 +304,10 @@ uint8_t HDC2022_c::get_Interrupt()
   *            @arg GPIO_PIN_SET: to set the port pin
   * @retval None
   */
-void HDC2022_c::get_TemperatureOffset()
+uint8_t HDC2022_c::get_TemperatureOffset()
 {
 
-
+	return	I2C_getByte(ADDR_TEMP_OFFSET_ADJUST);
 
 }
 
@@ -232,7 +329,7 @@ void HDC2022_c::get_TemperatureOffset()
 void HDC2022_c::set_TemperatureOffset()
 {
 
-
+	I2C_setByte(ADDR_TEMP_OFFSET_ADJUST,TEMPERATURE_OFFSET_ADJUSTMENT.val);
 
 }
 
@@ -254,7 +351,7 @@ void HDC2022_c::set_TemperatureOffset()
 uint8_t HDC2022_c::get_HumidityOffset()
 {
 
-
+	return	I2C_getByte(ADDR_HUM_OFFSET_ADJUST);
 
 }
 
@@ -276,7 +373,7 @@ uint8_t HDC2022_c::get_HumidityOffset()
 void HDC2022_c::set_HumidityOffset()
 {
 
-
+	I2C_setByte(ADDR_HUM_OFFSET_ADJUST,HUMIDITY_OFFSET_ADJUSTMENT.val);
 
 }
 
@@ -298,7 +395,7 @@ void HDC2022_c::set_HumidityOffset()
 uint8_t HDC2022_c::get_TemperatureLOWThreshold()
 {
 
-
+	return	I2C_getByte(ADDR_TEMP_THR_L);
 
 }
 
@@ -320,7 +417,7 @@ uint8_t HDC2022_c::get_TemperatureLOWThreshold()
 void HDC2022_c::set_TemperatureLOWThreshold()
 {
 
-
+	I2C_setByte(ADDR_TEMP_THR_L, TEMPERATURE_THRESHOLD_LOW);
 
 }
 
@@ -342,7 +439,7 @@ void HDC2022_c::set_TemperatureLOWThreshold()
 uint8_t HDC2022_c::get_TemperatureHIGHThreshold()
 {
 
-
+	return	I2C_getByte(ADDR_TEMP_THR_H);
 
 }
 
@@ -364,7 +461,7 @@ uint8_t HDC2022_c::get_TemperatureHIGHThreshold()
 void HDC2022_c::set_TemperatureHIGHThreshold()
 {
 
-
+	I2C_setByte(ADDR_TEMP_THR_H, TEMPERATURE_THRESHOLD_HIGH);
 
 }
 
@@ -386,7 +483,7 @@ void HDC2022_c::set_TemperatureHIGHThreshold()
 uint8_t HDC2022_c::get_HumidityLOWThreshold()
 {
 
-
+	return	I2C_getByte(ADDR_RH_THR_L);
 
 }
 
@@ -408,7 +505,7 @@ uint8_t HDC2022_c::get_HumidityLOWThreshold()
 void HDC2022_c::set_HumidityLOWThreshold()
 {
 
-
+	I2C_setByte(ADDR_RH_THR_L, HUMIDITY_THRESHOLD_LOW);
 
 }
 
@@ -430,7 +527,7 @@ void HDC2022_c::set_HumidityLOWThreshold()
 uint8_t HDC2022_c::get_HumidityHIGHThreshold()
 {
 
-
+	return	I2C_getByte(ADDR_RH_THR_H);
 
 }
 
@@ -452,7 +549,7 @@ uint8_t HDC2022_c::get_HumidityHIGHThreshold()
 void HDC2022_c::set_HumidityHIGHThreshold()
 {
 
-
+	I2C_setByte(ADDR_RH_THR_H, HUMIDITY_THRESHOLD_HIGH);
 
 }
 
@@ -474,7 +571,7 @@ void HDC2022_c::set_HumidityHIGHThreshold()
 void HDC2022_c::set_DeviceConfiguration()
 {
 
-
+	I2C_setByte(ADDR_DEVICE_CONFIGURATION, DEVICE_CONFIGURATION.val);
 
 }
 
@@ -496,7 +593,7 @@ void HDC2022_c::set_DeviceConfiguration()
 uint8_t HDC2022_c::get_DeviceConfiguration()
 {
 
-
+	return	I2C_getByte(ADDR_DEVICE_CONFIGURATION);
 
 }
 
@@ -518,7 +615,7 @@ uint8_t HDC2022_c::get_DeviceConfiguration()
 void HDC2022_c::set_MeasurementConfiguration()
 {
 
-
+	I2C_setByte(ADDR_MEASUREMENT_CONFIGURATION, MEASUREMENT_CONFIGURATION.val);
 
 }
 
@@ -540,7 +637,7 @@ void HDC2022_c::set_MeasurementConfiguration()
 uint8_t HDC2022_c::get_MeasurementConfiguration()
 {
 
-
+	return	I2C_getByte(ADDR_MEASUREMENT_CONFIGURATION);
 
 }
 
@@ -562,7 +659,7 @@ uint8_t HDC2022_c::get_MeasurementConfiguration()
 uint8_t HDC2022_c::get_ManufacturerIDLOW()
 {
 
-
+	return	I2C_getByte(ADDR_MANUFACTURER_ID_LOW);
 
 }
 
@@ -584,7 +681,7 @@ uint8_t HDC2022_c::get_ManufacturerIDLOW()
 uint8_t HDC2022_c::get_ManufacturerIDHIGH()
 {
 
-
+	return	I2C_getByte(ADDR_MANUFACTURER_ID_HIGH);
 
 }
 
@@ -606,7 +703,7 @@ uint8_t HDC2022_c::get_ManufacturerIDHIGH()
 uint8_t HDC2022_c::get_DeviceIDLOW()
 {
 
-
+	return	I2C_getByte(ADDR_DEVICE_ID_LOW);
 
 }
 
@@ -628,29 +725,7 @@ uint8_t HDC2022_c::get_DeviceIDLOW()
 uint8_t HDC2022_c::get_DeviceIDHIGH()
 {
 
-
-
-}
-
-
-/**
-  * @brief  Set or clear the selected data port bit.
-  * @note   This function uses GPIOx_BSRR and GPIOx_BRR registers to allow atomic read/modify
-  *         accesses. In this way, there is no risk of an IRQ occurring between
-  *         the read and the modify access.
-  *
-  * @param  GPIOx where x can be (A..H) to select the GPIO peripheral for STM32F0 family
-  * @param  GPIO_Pin specifies the port bit to be written.
-  *          This parameter can be one of GPIO_PIN_x where x can be (0..15).
-  * @param  PinState specifies the value to be written to the selected bit.
-  *          This parameter can be one of the GPIO_PinState enum values:
-  *            @arg GPIO_PIN_RESET: to clear the port pin
-  *            @arg GPIO_PIN_SET: to set the port pin
-  * @retval None
-  */
-void HDC2022_c::Init()
-{
-
-
+	return	I2C_getByte(ADDR_DEVICE_ID_HIGH);
 
 }
+
