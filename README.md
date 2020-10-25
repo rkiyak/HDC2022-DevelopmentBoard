@@ -1,4 +1,5 @@
 # HDC2022-DevelopmentBoard
+
  ---------------------------------------
  TI HDC2022 Development Board & Firmware
 
@@ -18,9 +19,29 @@
 
 ## Firmware
 
-* 
-* 
-
+* IDE : STM32CubeIDE
+* MCU : STM32L476RG-Nucleo
+* Dependency : 
+```sh
+	#include <stdint.h>
+	#include <stm32l4xx_hal.h>
+```
+* Usage Example: 
+```sh
+ 	#include <HDC2022.hpp>
+	uint8_t temperature;
+	uint8_t humidity;
+	HDC2022_c HDC2022;
+ 	void main()
+ 	{
+ 	 HDC2022.Init(hi2c1,100);
+ 		while(1)
+ 		{
+			temperature=HDC2022.get_Temperature();
+			humidityHDC2022.get_Humidity();
+ 		}
+ 	}
+```
 # License
 GNU GPLv3 (both hardware and experimental software)
 
