@@ -34,7 +34,7 @@ void HDC2022_c::I2C_setByte(addr_t reg, uint8_t val)
 
 	buf_setI2C[0] = reg;
 	buf_setI2C[0] = val;
-	HAL_I2C_Master_Transmit(&i2c,DeviceID<<1,buf_setI2C,2,i2c_timeout);
+	HAL_I2C_Master_Transmit(&i2c,DeviceID,buf_setI2C,2,i2c_timeout);
 
 }
 
@@ -57,8 +57,8 @@ uint8_t HDC2022_c::I2C_getByte(addr_t reg)
 {
 
 	buf_getI2C[0] = reg;
-	HAL_I2C_Master_Transmit(&i2c,DeviceID<<1,buf_getI2C,1,i2c_timeout);
-	HAL_I2C_Master_Receive(&i2c,DeviceID<<1,buf_getI2C,1,i2c_timeout);
+	HAL_I2C_Master_Transmit(&i2c,DeviceID,buf_getI2C,1,i2c_timeout);
+	HAL_I2C_Master_Receive(&i2c,DeviceID,buf_getI2C,1,i2c_timeout);
 	return buf_getI2C[0];
 
 }
@@ -111,6 +111,7 @@ void HDC2022_c::Init(I2C_HandleTypeDef I2C_Handler, uint8_t timeout)
 
 	i2c=I2C_Handler;
 	i2c_timeout=timeout;
+	DeviceID=DeviceIDLow;
 	DeInit();
 	set_DeviceConfiguration();
 	set_HumidityHIGHThreshold();

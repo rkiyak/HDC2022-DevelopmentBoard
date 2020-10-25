@@ -48,7 +48,10 @@ public:
 	}addr_t;
 
 addr_t adress;
-	uint8_t DeviceID = 0x80;
+	uint8_t DeviceID;
+	uint8_t DeviceIDHigh = 0x41<<1;
+	uint8_t DeviceIDLow = 0x40<<1;
+
 	uint8_t buffer_8[5];
 	uint8_t buf_getI2C[2];
 	uint8_t buf_setI2C[2];
