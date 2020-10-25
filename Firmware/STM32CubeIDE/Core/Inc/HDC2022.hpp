@@ -22,6 +22,7 @@ class HDC2022_c {
 public:
 
 	I2C_HandleTypeDef i2c;
+	uint8_t i2c_timeout = 100;
 	 typedef enum
 	{
 		ADDR_TEMPERATURE_LOW = 0x00,    	/*	Temperature data [7:0]                           	*/
@@ -53,10 +54,10 @@ addr_t adress;
 	uint8_t buf_setI2C[2];
 	float valHumidity;
 	float valTemperature;
-	uint8_t i2c_timeout = 100;
+
 
   void      DeInit ();
-  void      Init (I2C_HandleTypeDef I2C_Handler);
+  void      Init (I2C_HandleTypeDef I2C_Handler, uint8_t timeout);
 
   float  get_Temperature();
   float  get_Humidity();

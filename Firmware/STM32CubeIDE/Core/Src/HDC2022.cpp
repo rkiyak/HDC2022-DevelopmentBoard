@@ -106,10 +106,11 @@ void HDC2022_c::DeInit()
   *            @arg GPIO_PIN_SET: to set the port pin
   * @retval None
   */
-void HDC2022_c::Init(I2C_HandleTypeDef I2C_Handler)
+void HDC2022_c::Init(I2C_HandleTypeDef I2C_Handler, uint8_t timeout)
 {
 
 	i2c=I2C_Handler;
+	i2c_timeout=timeout;
 	DeInit();
 	set_DeviceConfiguration();
 	set_HumidityHIGHThreshold();

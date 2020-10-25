@@ -94,7 +94,7 @@ HDC2022_c HDC2022;
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  HDC2022.Init(hi2c1);
+  HDC2022.Init(hi2c1,100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
