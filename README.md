@@ -43,7 +43,7 @@
  		while(1)
  		{
 			temperature=HDC2022.get_Temperature();
-			humidityHDC2022.get_Humidity();
+			humidity=HDC2022.get_Humidity();
  		}
  	}
 ```
